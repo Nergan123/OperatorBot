@@ -1,0 +1,6 @@
+tips
+.env
+__pycache__
+.idea
+logs
+*.json
