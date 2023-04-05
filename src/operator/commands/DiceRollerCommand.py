@@ -26,10 +26,10 @@ class DiceRollerCommand(BaseClass, commands.Cog, name="Dice rolls"):
                 rolls=rolls,
             )
 
-            await ctx.reply(message)
+            await ctx.send(message)
 
         except ValueError as e:
-            await ctx.reply(str(e))
+            await ctx.send(str(e))
 
         except ZeroDivisionError:
-            await ctx.reply("Both values should be greater than 0")
+            await ctx.send("Both values should be greater than 0")

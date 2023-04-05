@@ -14,11 +14,11 @@ class PlayerService(BaseClass):
     ]
 
     def __init__(self):
-        self.players = {}
+        self._players = {}
         super().__init__("player_service")
 
     def add_player(self, ctx: Context, name: str):
         """Adds player to list"""
 
-        self.players[ctx.message.author.id] = asdict(PlayerData(ctx, name))
+        self._players[ctx.message.author.id] = asdict(PlayerData(ctx, name))
         self.save_state()
