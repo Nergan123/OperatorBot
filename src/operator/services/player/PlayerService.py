@@ -10,15 +10,43 @@ class PlayerService(BaseClass):
     """Class to handle players"""
 
     SERIALIZABLE_FIELDS = [
-        "players"
+        "_players"
     ]
 
     def __init__(self):
-        self._players = {}
         super().__init__("player_service")
+        self._players = {}
+        self.load_state()
 
-    def add_player(self, ctx: Context, name: str):
+    def add_player(self, ctx: Context, name: str) -> None:
         """Adds player to list"""
+
+        self.log.debug(self._players)
+        if str(ctx.message.author.id) in self._players:
+            raise KeyError("Player already exists")
 
         self._players[ctx.message.author.id] = asdict(PlayerData(ctx, name))
         self.save_state()
+
+    def remove_player(self, player_id: int) -> None:
+        """Removes player object"""
+
+        self._players.pop(player_id)
+        self.save_state()
+
+    def set_parameter(self, player_id: int, parameter_name: str, parameter_val: int | str) -> None:
+        """Sets a parameter in player object"""
+
+        self._players[player_id][parameter_name] = parameter_val
+        self.log.debug(self._players)
+        self.save_state()
+
+    def get_player_id_by_name(self, name: str) -> int:
+        """Returns a player id"""
+
+        for player_id in self._players:
+            self.log.debug(player_id)
+            if self._players[player_id]["name"] == name:
+                return player_id
+
+        raise ValueError("Player name not found")

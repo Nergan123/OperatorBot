@@ -17,7 +17,21 @@ class PlayerCommand(BaseClass, commands.Cog, name="Players handling"):
     async def add_player(self, ctx: Context, message: str):
         """Adds player to the campaign"""
 
-        self.state.get_player_service().add_player(ctx, message)
-        self.log.info("Added new player")
+        try:
+            self.state.get_player_service().add_player(ctx, message)
+            self.log.info("Added new player")
 
-        await ctx.reply("Player registered")
+            await ctx.send("Player registered")
+        except KeyError as error:
+            await ctx.send(str(error).replace("'", ""))
+
+    @commands.command(name="remove_player", help="Removes player from a campaign")
+    async def remove_player(self, ctx: Context, name: str):
+        """Removes player from current campaign"""
+
+        try:
+            player_id = self.state.get_player_service().get_player_id_by_name(name)
+            self.state.get_player_service().remove_player(player_id)
+            await ctx.send(f"Removed: {name}")
+        except ValueError as error:
+            await ctx.send(str(error).replace("'", ""))

@@ -13,7 +13,6 @@ class PlayerData(LoggingHandler):
     id: int
     state: int
     location: str
-    filename: str
 
     def __init__(self, ctx: Context, message: str):
         super().__init__()
