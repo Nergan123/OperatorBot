@@ -14,15 +14,21 @@ class LocationCommand(BaseClass, commands.Cog, name="Location setting. DM role r
         self.log.info("Loaded")
 
     @commands.command(name="set_location", help="Sets current location")
-    async def location_set(self, ctx: Context, location_name: str, *args) -> None:
-        """Sets location for player"""
+    @commands.has_role("DM")
+    async def set_location(self, ctx: Context, location_name: str) -> None:
+        """Sets location"""
 
         try:
-            for name in args:
-                self.log.info(args)
-                player_id = self.state.get_player_service().get_player_id_by_name(name)
-                self.state.get_player_service().set_parameter(player_id, "location", location_name)
-                await ctx.send(f"{name} moves to {location_name}")
+            answer = self.state.get_location_service().set_location(location_name)
+            image = self.state.get_location_service().get_image()
+            await ctx.send(answer)
+            await ctx.send(file=image)
 
-        except ValueError as error:
-            await ctx.send(str(error).replace("'", ""))
+        except KeyError:
+            await ctx.send("Location not found")
+
+    @set_location.error
+    async def help_mod_error(self, ctx: Context, error):
+        """Returns an error"""
+
+        await ctx.send(str(error).replace("'", ""))

@@ -12,7 +12,6 @@ class PlayerData(LoggingHandler):
     name: str
     id: int
     state: int
-    location: str
 
     def __init__(self, ctx: Context, message: str):
         super().__init__()
@@ -20,5 +19,4 @@ class PlayerData(LoggingHandler):
         self.name = message.replace(" ", "")
         self.id = ctx.message.author.id
         self.state = 0
-        self.location = ""
         self.log.info(f"Loaded character: {self.name}")

@@ -1,6 +1,7 @@
 from src.operator.helpers.BaseClass import BaseClass
 from src.operator.services.commentator.CommentatorService import CommentatorService
 from src.operator.services.dice_rolls.DiceRollerService import DiceRollerService
+from src.operator.services.location.LocationService import LocationService
 from src.operator.services.player.PlayerService import PlayerService
 
 
@@ -12,6 +13,7 @@ class State(BaseClass):
         self._dice_rolls = DiceRollerService()
         self._commentator = CommentatorService()
         self._players = PlayerService()
+        self._location_service = LocationService()
 
     def get_dice_rolls(self):
         """Returns dice roller service"""
@@ -27,3 +29,8 @@ class State(BaseClass):
         """Returns player service"""
 
         return self._players
+
+    def get_location_service(self):
+        """Returns location service"""
+
+        return self._location_service

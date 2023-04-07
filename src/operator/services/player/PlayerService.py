@@ -21,7 +21,6 @@ class PlayerService(BaseClass):
     def add_player(self, ctx: Context, name: str) -> None:
         """Adds player to list"""
 
-        self.log.debug(self._players)
         if str(ctx.message.author.id) in self._players:
             raise KeyError("Player already exists")
 
