@@ -1,4 +1,5 @@
 import json
+import random
 
 from discord import File
 
@@ -26,9 +27,20 @@ class LocationService(BaseClass):
         if location_name in self.map.keys():
             self._current_location = location_name
             self.log.info(f"Setting current location to: {location_name}")
+            self.save_state()
             return f"Entering {location_name}"
 
         raise KeyError("Location not found")
+
+    def get_music(self, battle: bool) -> str:
+        """Returns a music url"""
+
+        if battle:
+            links = self.map[self._current_location]["music_battle"]
+        else:
+            links = self.map[self._current_location]["music_calm"]
+        output = random.choice(links)
+        return output
 
     def get_image(self):
         """Returns a location image"""

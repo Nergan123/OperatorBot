@@ -23,12 +23,18 @@ class LocationCommand(BaseClass, commands.Cog, name="Location setting. DM role r
             image = self.state.get_location_service().get_image()
             await ctx.send(answer)
             await ctx.send(file=image)
+            guild = self.state.get_guild()
+            url = self.state.get_location_service().get_music(False)
+            if guild:
+                self.state.set_playing(True)
+                vol = self.state.get_volume()
+                self.state.get_sound_service().play_music(guild, url, vol)
 
         except KeyError:
             await ctx.send("Location not found")
 
     @set_location.error
-    async def help_mod_error(self, ctx: Context, error):
+    async def help_error(self, ctx: Context, error):
         """Returns an error"""
 
         await ctx.send(str(error).replace("'", ""))
