@@ -1,5 +1,6 @@
 from discord.ext import commands
 from discord.ext.commands import Context
+from discord.utils import get
 
 from src.operator.helpers.BaseClass import BaseClass
 from src.operator.services.State import State
@@ -26,9 +27,18 @@ class LocationCommand(BaseClass, commands.Cog, name="Location setting. DM role r
             guild = self.state.get_guild()
             url = self.state.get_location_service().get_music(False)
             if guild:
-                self.state.set_playing(True)
-                vol = self.state.get_volume()
-                self.state.get_sound_service().play_music(guild, url, vol)
+                if not self.state.get_playing():
+                    self.state.set_playing(True)
+                    vol = self.state.get_volume()
+                    self.state.get_sound_service().play_music(guild, url, vol)
+                else:
+                    voice = get(
+                        self.state.bot.voice_clients,
+                        guild=self.state.bot.get_guild(self.state.get_guild())
+                    )
+                    self.state.get_sound_service().pause_music(voice)
+                    vol = self.state.get_volume()
+                    self.state.get_sound_service().play_music(guild, url, vol)
 
         except KeyError:
             await ctx.send("Location not found")
