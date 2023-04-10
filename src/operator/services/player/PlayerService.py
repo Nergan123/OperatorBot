@@ -22,10 +22,10 @@ class PlayerService(BaseClass):
         """Adds player to list"""
 
         self.log.info(self._players.keys())
-        if str(ctx.message.author.id) in self._players:
+        if str(ctx.message.author.id) in self._players.keys():
             raise KeyError("Player already exists")
 
-        self._players[ctx.message.author.id] = asdict(PlayerData(ctx, name))
+        self._players[str(ctx.message.author.id)] = asdict(PlayerData(ctx, name))
         self.save_state()
 
     def remove_player(self, player_id: int) -> None:
