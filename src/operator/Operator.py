@@ -3,6 +3,7 @@ from discord.ext import commands
 
 from src.operator.commands.DiceRollerCommand import DiceRollerCommand
 from src.operator.commands.LocationCommand import LocationCommand
+from src.operator.commands.NpcCommand import NpcCommand
 from src.operator.commands.PlayerCommand import PlayerCommand
 from src.operator.commands.SoundCommand import SoundCommand
 from src.operator.helpers.BaseClass import BaseClass
@@ -23,6 +24,7 @@ class Operator(BaseClass, commands.Bot):
         self.players = PlayerCommand(self.state)
         self.location = LocationCommand(self.state)
         self.sound = SoundCommand(self.state)
+        self.npc = NpcCommand(self.state)
 
     async def on_ready(self) -> None:
         """Log message when bot is running"""
@@ -31,6 +33,7 @@ class Operator(BaseClass, commands.Bot):
         await self.add_cog(self.players)
         await self.add_cog(self.location)
         await self.add_cog(self.sound)
+        await self.add_cog(self.npc)
         await self.sound.on_load()
         print(f"{self.user.name} connected to server")
         self.log.info(f"{self.user.name} connected to server")

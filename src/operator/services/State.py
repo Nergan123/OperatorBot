@@ -2,6 +2,7 @@ from src.operator.helpers.BaseClass import BaseClass
 from src.operator.services.commentator.CommentatorService import CommentatorService
 from src.operator.services.dice_rolls.DiceRollerService import DiceRollerService
 from src.operator.services.location.LocationService import LocationService
+from src.operator.services.npc.NpcService import NpcService
 from src.operator.services.player.PlayerService import PlayerService
 from src.operator.services.sound.SoundService import SoundService
 
@@ -23,6 +24,7 @@ class State(BaseClass):
         self._players = PlayerService()
         self._location_service = LocationService()
         self._sound_service = SoundService(bot)
+        self._npc = NpcService()
 
         self._voice_channel_id = None
         self._guild_id = None
@@ -108,3 +110,8 @@ class State(BaseClass):
         """returns volume val"""
 
         return self._volume
+
+    def get_npc_service(self):
+        """Returns npc service"""
+
+        return self._npc

@@ -50,3 +50,15 @@ class LocationService(BaseClass):
         image_file = File(file_path)
 
         return image_file
+
+    def get_npc(self, name: str) -> dict:
+        """returns an NPC dict"""
+
+        if name not in self.map[self._current_location]["npc"]:
+            raise KeyError("NPC not found")
+
+        path = self.map[self._current_location]["npc"][name]
+        with open(path, "r") as file:
+            output = json.loads(file.read())
+
+        return output
