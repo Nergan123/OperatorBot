@@ -74,6 +74,7 @@ class NpcCommand(BaseClass, commands.Cog, name="NPC interactions"):
             self.state.get_volume()
         )
 
+        self.state.get_npc_service().set_initiative(True)
         players = self.state.get_player_service().get_players()
         role = get(ctx.guild.roles, name="DM")
         initiatives = []
@@ -92,7 +93,8 @@ class NpcCommand(BaseClass, commands.Cog, name="NPC interactions"):
             )
 
             initiative = random.randint(1, 20)
-            await ctx.send(f"**{player['name']}** rolls: {initiative}")
+            await ctx.send(f"**{player['name']}** rolls: {initiative} + {player['initiative']}")
+            initiative += player["initiative"]
             initiatives.append(initiative)
             names.append(player["name"])
 
@@ -114,6 +116,7 @@ class NpcCommand(BaseClass, commands.Cog, name="NPC interactions"):
 
         await ctx.send(message)
         name = self.state.get_npc_service().get_turn()
+        self.state.get_npc_service().set_initiative(False)
         await ctx.send(f"Your turn **{name}**")
 
     @commands.command(name="turn", help="Switches to next turn in the battle")

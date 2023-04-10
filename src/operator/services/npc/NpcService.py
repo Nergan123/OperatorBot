@@ -18,6 +18,7 @@ class NpcService(BaseClass):
         self._queue = []
         self._turn = 0
         self.load_state()
+        self._initiative = False
         self.log.info("Loaded")
 
     def load_npc(self, npc: dict) -> str:
@@ -96,3 +97,13 @@ class NpcService(BaseClass):
             self._turn = 0
 
         self.save_state()
+
+    def set_initiative(self, val: bool):
+        """Sets status of initiative rolls"""
+
+        self._initiative = val
+
+    def get_initiative(self):
+        """Returns status of initiative"""
+
+        return self._initiative

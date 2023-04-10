@@ -26,7 +26,7 @@ class DiceRollerCommand(BaseClass, commands.Cog, name="Dice rolls"):
                 rolls=rolls,
             )
 
-            if not self.state.get_battle():
+            if not self.state.get_npc_service().get_initiative():
                 await ctx.send(message)
 
         except ValueError as e:

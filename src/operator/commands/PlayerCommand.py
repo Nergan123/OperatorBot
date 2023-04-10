@@ -35,3 +35,13 @@ class PlayerCommand(BaseClass, commands.Cog, name="Players handling"):
             await ctx.send(f"Removed: {name}")
         except ValueError as error:
             await ctx.send(str(error).replace("'", ""))
+
+    @commands.command(name="set_initiative", help="Sets an initiative modifier for player")
+    async def set_initiative(self, ctx: Context, name: str, val: int):
+        """Sets an initiative modifier for a player"""
+
+        try:
+            self.state.get_player_service().set_initiative(name, int(val))
+            await ctx.send(f"Set initiative modifier for {name}")
+        except ValueError as error:
+            await ctx.send(str(error).replace("'", ""))

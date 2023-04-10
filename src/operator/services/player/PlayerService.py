@@ -59,3 +59,12 @@ class PlayerService(BaseClass):
         self.log.info(f"Returning: {players}")
 
         return players
+
+    def set_initiative(self, name: str, val: int):
+        """Sets modifier"""
+
+        player_id = self.get_player_id_by_name(name)
+        self.log.info(f"Setting {val} for {name}")
+
+        self._players[player_id]["initiative"] = val
+        self.save_state()
