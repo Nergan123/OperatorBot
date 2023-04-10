@@ -21,7 +21,8 @@ class PlayerService(BaseClass):
     def add_player(self, ctx: Context, name: str) -> None:
         """Adds player to list"""
 
-        if ctx.message.author.id in self._players:
+        self.log.info(self._players.keys())
+        if str(ctx.message.author.id) in self._players:
             raise KeyError("Player already exists")
 
         self._players[ctx.message.author.id] = asdict(PlayerData(ctx, name))
