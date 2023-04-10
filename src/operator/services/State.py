@@ -14,7 +14,8 @@ class State(BaseClass):
         "_voice_channel_id",
         "_guild_id",
         "_playing",
-        "_volume"
+        "_volume",
+        "_battle"
     ]
 
     def __init__(self, bot):
@@ -31,6 +32,7 @@ class State(BaseClass):
         self._voice_channel = None
         self._playing = False
         self._volume = 1
+        self._battle = False
         self.bot = bot
         self.load_state()
 
@@ -115,3 +117,14 @@ class State(BaseClass):
         """Returns npc service"""
 
         return self._npc
+
+    def set_battle(self, val: bool):
+        """Sets battle status"""
+
+        self._battle = val
+        self.save_state()
+
+    def get_battle(self):
+        """Returns battle status"""
+
+        return self._battle

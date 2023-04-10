@@ -25,7 +25,8 @@ class LocationCommand(BaseClass, commands.Cog, name="Location setting. DM role r
             await ctx.send(answer)
             await ctx.send(file=image)
             guild = self.state.get_guild()
-            url = self.state.get_location_service().get_music(False)
+            battle_state = self.state.get_battle()
+            url = self.state.get_location_service().get_music(battle_state)
             if guild:
                 if not self.state.get_playing():
                     self.state.set_playing(True)

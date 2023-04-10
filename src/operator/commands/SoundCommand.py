@@ -119,10 +119,11 @@ class SoundCommand(BaseClass, commands.Cog, name="Sound control"):
             self.log.info("Connected to voice")
 
         if self.state.get_playing():
+            battle_state = self.state.get_battle()
             vol = self.state.get_volume()
             self.state.get_sound_service().play_music(
                 self.state.get_guild(),
-                self.state.get_location_service().get_music(False),
+                self.state.get_location_service().get_music(battle_state),
                 vol
             )
         # pylint: disable = no-member

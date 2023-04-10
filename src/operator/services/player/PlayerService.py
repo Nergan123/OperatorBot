@@ -49,3 +49,13 @@ class PlayerService(BaseClass):
                 return player_id
 
         raise ValueError("Player name not found")
+
+    def get_players(self):
+        """Returns all players"""
+
+        players = []
+        for player in self._players:
+            players.append(self._players[player])
+        self.log.info(f"Returning: {players}")
+
+        return players
