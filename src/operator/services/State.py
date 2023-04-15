@@ -4,6 +4,7 @@ from src.operator.services.dice_rolls.DiceRollerService import DiceRollerService
 from src.operator.services.location.LocationService import LocationService
 from src.operator.services.npc.NpcService import NpcService
 from src.operator.services.player.PlayerService import PlayerService
+from src.operator.services.sanity.SanityService import SanityService
 from src.operator.services.sound.SoundService import SoundService
 
 
@@ -25,6 +26,7 @@ class State(BaseClass):
         self._players = PlayerService()
         self._location_service = LocationService()
         self._sound_service = SoundService(bot)
+        self._sanity_service = SanityService()
         self._npc = NpcService()
 
         self._voice_channel_id = None
@@ -128,3 +130,8 @@ class State(BaseClass):
         """Returns battle status"""
 
         return self._battle
+
+    def get_sanity_service(self):
+        """returns sanity service"""
+
+        return self._sanity_service

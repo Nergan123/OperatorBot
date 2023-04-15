@@ -127,7 +127,7 @@ class SoundCommand(BaseClass, commands.Cog, name="Sound control"):
                 vol
             )
         # pylint: disable = no-member
-        await self.check_playing.start()
+        self.check_playing.start()
 
     @tasks.loop(seconds=5)
     async def check_playing(self):
