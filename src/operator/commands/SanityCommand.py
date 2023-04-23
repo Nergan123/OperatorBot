@@ -42,7 +42,7 @@ class SanityCommand(BaseClass, commands.Cog, name="Internal"):
         await self.state.get_sanity_service().restore(self.state.bot)
         self.state.get_sanity_service().set_level(0)
 
-    @tasks.loop(seconds=2)
+    @tasks.loop(seconds=3)
     async def change_discord(self):
         """Changes an appearance"""
 
@@ -52,11 +52,11 @@ class SanityCommand(BaseClass, commands.Cog, name="Internal"):
             level = 90
 
         type_of_actions = 0
-        if level <= 50:
+        if level <= 30:
             type_of_actions = random.randint(0, 1)
-        elif 50 < level <= 70:
+        elif 30 < level <= 60:
             type_of_actions = random.randint(0, 2)
-        elif 70 < level:
+        elif 60 < level:
             type_of_actions = random.randint(0, 3)
 
         if random.randint(0, 100) < level:
@@ -64,17 +64,16 @@ class SanityCommand(BaseClass, commands.Cog, name="Internal"):
                 await self.state.get_sanity_service().change_entity(level, self.state.bot)
 
             elif type_of_actions == 1:
-                await self.state.get_sanity_service().restore(self.state.bot)
+                await self.state.get_sanity_service().restore_random(self.state.bot)
 
             elif type_of_actions == 2:
-                await self.change_sound()
+                if random.randint(0, 100) < 10:
+                    await self.change_sound()
 
             elif type_of_actions == 3:
                 timer = random.randint(1, 3)
                 img, channel = self.state.get_sanity_service().get_image(self.state.bot)
                 await channel.send(file=img, delete_after=timer)
-
-            self.log.info("Changing")
 
     async def change_sound(self):
         """Changes sound to random music sfx"""

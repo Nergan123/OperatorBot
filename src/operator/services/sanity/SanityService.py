@@ -85,6 +85,20 @@ class SanityService(BaseClass):
                 await msg.edit(content=name_orig)
                 await asyncio.sleep(2)
 
+    async def restore_random(self, bot: Bot):
+        """Restores random message from list"""
+
+        changed_messages = [x for x in self._entity if x["changed"]]
+        if len(changed_messages) > 0:
+            message = random.choice(changed_messages)
+            self.log.info(f"Restoring: {message}")
+            name_orig = message["name"]
+            channel = bot.get_channel(int(message["channel"]))
+            msg = await channel.fetch_message(int(message["id"]))
+            message["changed"] = False
+            self.save_state()
+            await msg.edit(content=name_orig)
+
     def change_name(self, name: str, level: int) -> str:
         """Changes names according to sanity level"""
 
