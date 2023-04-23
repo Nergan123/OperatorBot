@@ -13,7 +13,11 @@ class SanityService(BaseClass):
         super().__init__("sanity_service")
         self.log.info("Loaded")
         self._level = 0
-        self._entity = {}
+        self._entity = {
+            "text": [],
+            "voice": [],
+            "message": []
+        }
         self.load_state()
 
     def set_level(self, level: int):
@@ -28,14 +32,22 @@ class SanityService(BaseClass):
 
         return self._level
 
-    def register_entity(self, type_entity: str, name: str):
+    def register_entity(self, type_entity: str, ent_id: int, name: str):
         """Adds entity to the list"""
 
-        if isinstance(self._entity[type_entity], list):
-            self._entity[type_entity] = self._entity[type_entity].append(name)
-        else:
-            self._entity[type_entity] = []
-            self._entity[type_entity] = self._entity[type_entity].append(name)
+        self.log.info(f"Got\n"
+                      f"\tType: {type_entity}\n"
+                      f"\tID: {ent_id}\n"
+                      f"\tName: {name}")
 
-        self.log.info(f"Added {name} to {type_entity}")
-        self.save_state()
+        entity = {
+            "id": ent_id,
+            "name": name
+        }
+
+        if entity not in self._entity[type_entity]:
+            self._entity[type_entity].append(entity)
+            self.log.info(f"Added {entity} to {type_entity}")
+            if len(self._entity[type_entity]) > 10:
+                self._entity[type_entity] = self._entity[type_entity][1::]
+            self.save_state()

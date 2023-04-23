@@ -29,12 +29,19 @@ class SanityCommand(BaseClass, commands.Cog, name="Internal"):
 
         # pylint: disable = no-member
         self.log.info("Launching services")
+        guild = self.state.bot.get_guild(1093151586441773086)
+        self.log.info(f"Got guild: {guild}")
+        for channel in guild.text_channels:
+            self.state.get_sanity_service().register_entity("text", channel.id, channel.name)
         self.change_discord.start()
+
+        for voice in guild.voice_channels:
+            self.state.get_sanity_service().register_entity("voice", voice.id, voice.name)
 
     @tasks.loop(seconds=1)
     async def change_discord(self):
         """Changes an appearance"""
 
         level = self.state.get_sanity_service().get_level()
-        if random.randint(0, 100) <= level:
+        if random.randint(0, 100) < level:
             self.log.info("Changing")
