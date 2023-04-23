@@ -28,7 +28,11 @@ class DiceRollerCommand(BaseClass, commands.Cog, name="Dice rolls"):
 
             if not self.state.get_npc_service().get_initiative():
                 message_disc = await ctx.send(message)
-                self.state.get_sanity_service().register_entity("message", message_disc.id, message)
+                self.state.get_sanity_service().register_entity(
+                    message_disc.id,
+                    message,
+                    f"{ctx.channel.id}"
+                )
 
         except ValueError as e:
             await ctx.send(str(e))

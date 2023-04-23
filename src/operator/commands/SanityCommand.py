@@ -2,6 +2,7 @@ import random
 
 from discord.ext import commands, tasks
 from discord.ext.commands import Context
+from discord.utils import get
 
 from src.operator.helpers.BaseClass import BaseClass
 from src.operator.services.State import State
@@ -15,7 +16,7 @@ class SanityCommand(BaseClass, commands.Cog, name="Internal"):
         self.state = state
         self.log.info("Loaded")
 
-    @commands.command(name="sanity", help="")
+    @commands.command(name="level", help="")
     @commands.has_role("DM")
     async def sanity(self, ctx: Context, level: int):
         """Changes everything"""
@@ -29,19 +30,68 @@ class SanityCommand(BaseClass, commands.Cog, name="Internal"):
 
         # pylint: disable = no-member
         self.log.info("Launching services")
-        guild = self.state.bot.get_guild(1093151586441773086)
-        self.log.info(f"Got guild: {guild}")
-        for channel in guild.text_channels:
-            self.state.get_sanity_service().register_entity("text", channel.id, channel.name)
         self.change_discord.start()
 
-        for voice in guild.voice_channels:
-            self.state.get_sanity_service().register_entity("voice", voice.id, voice.name)
+    @commands.command(name="restore", help="")
+    @commands.has_role("DM")
+    async def restore_messages(self, ctx: Context):
+        """Restores everything"""
 
-    @tasks.loop(seconds=1)
+        self.log.info("Restoring everything")
+        await ctx.message.delete()
+        await self.state.get_sanity_service().restore(self.state.bot)
+        self.state.get_sanity_service().set_level(0)
+
+    @tasks.loop(seconds=2)
     async def change_discord(self):
         """Changes an appearance"""
 
         level = self.state.get_sanity_service().get_level()
+
+        if level == 100:
+            level = 90
+
+        type_of_actions = 0
+        if level <= 50:
+            type_of_actions = random.randint(0, 1)
+        elif 50 < level <= 70:
+            type_of_actions = random.randint(0, 2)
+        elif 70 < level:
+            type_of_actions = random.randint(0, 3)
+
         if random.randint(0, 100) < level:
+            if type_of_actions == 0:
+                await self.state.get_sanity_service().change_entity(level, self.state.bot)
+
+            elif type_of_actions == 1:
+                await self.state.get_sanity_service().restore(self.state.bot)
+
+            elif type_of_actions == 2:
+                await self.change_sound()
+
+            elif type_of_actions == 3:
+                timer = random.randint(1, 3)
+                img, channel = self.state.get_sanity_service().get_image(self.state.bot)
+                await channel.send(file=img, delete_after=timer)
+
             self.log.info("Changing")
+
+    async def change_sound(self):
+        """Changes sound to random music sfx"""
+
+        guild = self.state.get_guild()
+        url = self.state.get_sanity_service().get_url()
+        if guild:
+            if not self.state.get_playing():
+                self.state.set_playing(True)
+                vol = self.state.get_volume()
+                self.state.get_sound_service().play_music(guild, url, vol)
+            else:
+                voice = get(
+                    self.state.bot.voice_clients,
+                    guild=self.state.bot.get_guild(self.state.get_guild())
+                )
+                self.state.get_sound_service().pause_music(voice)
+                vol = self.state.get_volume()
+                self.state.get_sound_service().play_music(guild, url, vol)
+        return

@@ -40,3 +40,4 @@ wheel==0.38.4
 wrapt==1.15.0
 yarl==1.8.2
 yt-dlp==2023.3.4
+zalgo-text==0.6

@@ -54,5 +54,6 @@ class SoundService(BaseClass):
         if voice.is_paused():
             self.log.info("Resuming")
             voice.resume()
-        else:
-            raise AttributeError("Music not paused")
+            return
+
+        raise AttributeError("Music not paused")
