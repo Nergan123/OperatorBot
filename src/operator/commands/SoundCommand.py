@@ -59,7 +59,7 @@ class SoundCommand(BaseClass, commands.Cog, name="Sound control"):
 
         if not self.state.get_playing():
             guild_id = self.state.get_guild()
-            url = self.state.get_location_service().get_music(False)
+            url = self.state.get_location_service().get_music(self.state.get_battle())
             self.state.set_playing(True)
             vol = self.state.get_volume()
             self.state.get_sound_service().play_music(guild_id, url, vol)
