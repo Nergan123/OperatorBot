@@ -48,16 +48,17 @@ class SanityCommand(BaseClass, commands.Cog, name="Internal"):
 
         level = self.state.get_sanity_service().get_level()
 
-        if level == 100:
-            level = 90
+        level = min(level, 90)
 
         type_of_actions = 0
         if level <= 30:
             type_of_actions = random.randint(0, 1)
         elif 30 < level <= 60:
             type_of_actions = random.randint(0, 2)
-        elif 60 < level:
+        elif 60 < level <= 80:
             type_of_actions = random.randint(0, 3)
+        elif 80 < level:
+            type_of_actions = random.randint(0, 4)
 
         if random.randint(0, 100) < level:
             if type_of_actions == 0:
@@ -74,6 +75,10 @@ class SanityCommand(BaseClass, commands.Cog, name="Internal"):
                 timer = random.randint(1, 3)
                 img, channel = self.state.get_sanity_service().get_image(self.state.bot)
                 await channel.send(file=img, delete_after=timer)
+
+            elif type_of_actions == 4:
+                if random.randint(0, 100) < 30:
+                    await self.send_messages()
 
     async def change_sound(self):
         """Changes sound to random music sfx"""
@@ -94,3 +99,13 @@ class SanityCommand(BaseClass, commands.Cog, name="Internal"):
                 vol = self.state.get_volume()
                 self.state.get_sound_service().play_music(guild, url, vol)
         return
+
+    async def send_messages(self):
+        """Sends random messages to players"""
+
+        players = self.state.get_player_service().get_players()
+        for player in players:
+            self.log.info(f"Sending message to {player['name']}")
+            message = self.state.get_sanity_service().get_message(player["role"])
+            user = await self.state.bot.fetch_user(player["id"])
+            await user.send(message)

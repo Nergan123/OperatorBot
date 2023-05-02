@@ -27,7 +27,12 @@ class NpcCommand(BaseClass, commands.Cog, name="NPC interactions"):
             name = self.state.get_npc_service().load_npc(npc)
             image = self.state.get_npc_service().get_image()
 
-            await ctx.send(f"Detecting {name}")
+            message = await ctx.send(f"Detecting {name}")
+            self.state.get_sanity_service().register_entity(
+                message.id,
+                f"Detecting {name}",
+                f"{ctx.channel.id}"
+            )
             await ctx.send(file=image)
         except KeyError as error:
             self.log.error(error)
@@ -127,7 +132,12 @@ class NpcCommand(BaseClass, commands.Cog, name="NPC interactions"):
         self.state.get_npc_service().next_turn()
         name = self.state.get_npc_service().get_turn()
 
-        await ctx.send(f"Your turn **{name}**")
+        message = await ctx.send(f"Your turn **{name}**")
+        self.state.get_sanity_service().register_entity(
+            message.id,
+            f"Your turn **{name}**",
+            f"{ctx.channel.id}"
+        )
 
     @interaction.error
     @end_interaction.error

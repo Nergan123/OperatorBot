@@ -24,6 +24,8 @@ class SanityService(BaseClass):
         self._entity = []
         with open("src/data/sanity_data.json", "r") as file:
             self._data = json.loads(file.read())
+        with open("src/data/messages_sanity.json", "r") as file:
+            self._messages = json.loads(file.read())
         self.load_state()
 
     def set_level(self, level: int):
@@ -83,7 +85,7 @@ class SanityService(BaseClass):
                 message["changed"] = False
                 self.save_state()
                 await msg.edit(content=name_orig)
-                await asyncio.sleep(2)
+                await asyncio.sleep(3)
 
     async def restore_random(self, bot: Bot):
         """Restores random message from list"""
@@ -130,3 +132,12 @@ class SanityService(BaseClass):
         self.log.info(f"Returning: {url}")
 
         return url
+
+    def get_message(self, role: str) -> str:
+        """Returns a random string according to role"""
+
+        self.log.info(f"Processing for role: {role}")
+        message = random.choice(self._messages[role])
+        self.log.info(f"Choosing: {message}")
+
+        return message

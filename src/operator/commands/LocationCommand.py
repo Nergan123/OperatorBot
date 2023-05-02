@@ -22,7 +22,12 @@ class LocationCommand(BaseClass, commands.Cog, name="Location setting. DM role r
         try:
             answer = self.state.get_location_service().set_location(location_name)
             image = self.state.get_location_service().get_image()
-            await ctx.send(answer)
+            message = await ctx.send(answer)
+            self.state.get_sanity_service().register_entity(
+                message.id,
+                answer,
+                f"{ctx.channel.id}"
+            )
             await ctx.send(file=image)
             guild = self.state.get_guild()
             battle_state = self.state.get_battle()
