@@ -19,12 +19,20 @@ class DiceRollerCommand(BaseClass, commands.Cog, name="Dice rolls"):
 
         try:
             rolls, percent = self.state.get_dice_rolls().roll(message)
-            message = self.state.get_commentator().get_comment(
-                "dice_roll",
-                name=ctx.message.author.display_name,
-                percent=percent,
-                rolls=rolls,
-            )
+            if not self.state.get_battle():
+                message = self.state.get_commentator().get_comment(
+                    "dice_roll",
+                    name=ctx.message.author.display_name,
+                    percent=percent,
+                    rolls=rolls,
+                )
+            else:
+                message = self.state.get_commentator().get_comment(
+                    "dice_roll",
+                    name=self.state.get_npc_service().get_turn(),
+                    percent=percent,
+                    rolls=rolls,
+                )
 
             if not self.state.get_npc_service().get_initiative():
                 message_disc = await ctx.send(message)

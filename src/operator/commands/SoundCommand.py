@@ -141,6 +141,6 @@ class SoundCommand(BaseClass, commands.Cog, name="Sound control"):
             vol = self.state.get_volume()
             self.state.get_sound_service().play_music(
                 self.state.get_guild(),
-                self.state.get_location_service().get_music(False),
+                self.state.get_location_service().get_music(self.state.get_battle()),
                 vol
             )
