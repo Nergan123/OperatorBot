@@ -68,7 +68,7 @@ class SanityCommand(BaseClass, commands.Cog, name="Internal"):
                 await self.state.get_sanity_service().restore_random(self.state.bot)
 
             elif type_of_actions == 2:
-                if random.randint(0, 100) < 10:
+                if random.randint(0, 100) < 30:
                     await self.change_sound()
 
             elif type_of_actions == 3:

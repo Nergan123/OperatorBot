@@ -57,7 +57,7 @@ class SanityService(BaseClass):
         if entity not in self._entity:
             self._entity.append(entity)
             self.log.info(f"Added {entity}")
-            if len(self._entity) > 20:
+            if len(self._entity) > 10:
                 self._entity = self._entity[1::]
             self.save_state()
 
