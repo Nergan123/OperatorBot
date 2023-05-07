@@ -21,7 +21,7 @@ class PlayerData(LoggingHandler):
 
         roles = [
             "DM",
-            "IT_specialist",
+            "IT",
             "Security",
             "Engineer",
             "Medic"
