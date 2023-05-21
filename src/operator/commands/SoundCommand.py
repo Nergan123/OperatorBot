@@ -136,11 +136,12 @@ class SoundCommand(BaseClass, commands.Cog, name="Sound control"):
         guild = self.state.bot.get_guild(self.state.get_guild())
 
         voice = get(self.state.bot.voice_clients, guild=guild)
-        if not voice.is_playing() and self.state.get_playing():
-            self.state.set_playing(True)
-            vol = self.state.get_volume()
-            self.state.get_sound_service().play_music(
-                self.state.get_guild(),
-                self.state.get_location_service().get_music(self.state.get_battle()),
-                vol
-            )
+        if voice:
+            if not voice.is_playing() and self.state.get_playing():
+                self.state.set_playing(True)
+                vol = self.state.get_volume()
+                self.state.get_sound_service().play_music(
+                    self.state.get_guild(),
+                    self.state.get_location_service().get_music(self.state.get_battle()),
+                    vol
+                )

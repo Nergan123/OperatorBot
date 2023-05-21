@@ -28,25 +28,27 @@ class SoundService(BaseClass):
         self.log.info(f"Got guild: {guild}")
         voice = get(self.bot.voice_clients, guild=guild)
 
-        if not voice.is_playing():
-            with YoutubeDL(ydl_options) as ydl:
-                info = ydl.extract_info(url, download=False)
-            url_yt = info["url"]
-            self.log.info(f"Playing: {url}")
-            voice.play(FFmpegPCMAudio(url_yt, **ffmpeg_options))
-            voice.source = PCMVolumeTransformer(voice.source, volume=volume)
-            voice.is_playing()
-        else:
-            return
+        if voice:
+            if not voice.is_playing():
+                with YoutubeDL(ydl_options) as ydl:
+                    info = ydl.extract_info(url, download=False)
+                url_yt = info["url"]
+                self.log.info(f"Playing: {url}")
+                voice.play(FFmpegPCMAudio(url_yt, **ffmpeg_options))
+                voice.source = PCMVolumeTransformer(voice.source, volume=volume)
+                voice.is_playing()
+            else:
+                return
 
     def pause_music(self, voice):
         """Pauses current music"""
 
-        if voice.is_playing():
-            self.log.info("Pausing")
-            voice.pause()
-        else:
-            raise AttributeError("Not playing")
+        if voice:
+            if voice.is_playing():
+                self.log.info("Pausing")
+                voice.pause()
+            else:
+                raise AttributeError("Not playing")
 
     def resume_music(self, voice):
         """resumes current music"""

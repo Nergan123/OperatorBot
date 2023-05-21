@@ -1,3 +1,4 @@
+import discord
 from discord.ext import commands
 from discord.ext.commands import Context
 
@@ -27,9 +28,15 @@ class DiceRollerCommand(BaseClass, commands.Cog, name="Dice rolls"):
                     rolls=rolls,
                 )
             else:
+                role = discord.utils.get(ctx.guild.roles, name="DM")
+                if role in ctx.message.author.roles:
+                    player_name = self.state.get_npc_service().get_turn()
+                else:
+                    player_name = ctx.message.author.display_name
+
                 message = self.state.get_commentator().get_comment(
                     "dice_roll",
-                    name=self.state.get_npc_service().get_turn(),
+                    name=player_name,
                     percent=percent,
                     rolls=rolls,
                 )
