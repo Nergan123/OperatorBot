@@ -18,7 +18,12 @@ class SoundService(BaseClass):
     def play_music(self, guild_id: int, url: str, volume: float):
         """Plays the music"""
 
-        ydl_options = {"format": "bestaudio", "noplaylist": "True"}
+        ydl_options = {
+            "format": "bestaudio",
+            "user-agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0)"
+                          " Gecko/20100101 Firefox/115.0",
+            "cookies-from-browser": "firefox",
+        }
         ffmpeg_options = {
             "before_options": "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5",
             "options": "-vn",
