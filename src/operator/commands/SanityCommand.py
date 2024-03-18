@@ -62,19 +62,21 @@ class SanityCommand(BaseClass, commands.Cog, name="Internal"):
 
         if random.randint(0, 100) < level:
             if type_of_actions == 0:
-                await self.state.get_sanity_service().change_entity(level, self.state.bot)
+                if random.randint(0, 100) < 30:
+                    await self.state.get_sanity_service().change_entity(level, self.state.bot)
 
             elif type_of_actions == 1:
                 await self.state.get_sanity_service().restore_random(self.state.bot)
 
             elif type_of_actions == 2:
-                if random.randint(0, 100) < 3:
+                if random.randint(0, 100) < 2:
                     await self.change_sound()
 
             elif type_of_actions == 3:
                 timer = random.randint(1, 3)
-                img, channel = self.state.get_sanity_service().get_image(self.state.bot)
-                await channel.send(file=img, delete_after=timer)
+                if random.randint(0, 100) < 10:
+                    img, channel = self.state.get_sanity_service().get_image(self.state.bot)
+                    await channel.send(file=img, delete_after=timer)
 
             elif type_of_actions == 4:
                 if random.randint(0, 100) < 30:
