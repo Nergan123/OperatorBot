@@ -51,6 +51,17 @@ class PlayerService(BaseClass):
 
         raise ValueError("Player name not found")
 
+    def get_player_by_id(self, player_id: int) -> dict:
+        """Returns player object"""
+
+        return self._players[str(player_id)]
+
+    def get_player_by_name(self, name: str) -> dict:
+        """Returns player object"""
+
+        player_id = self.get_player_id_by_name(name)
+        return self._players[player_id]
+
     def get_players(self):
         """Returns all players"""
 
@@ -68,4 +79,95 @@ class PlayerService(BaseClass):
         self.log.info(f"Setting {val} for {name}")
 
         self._players[player_id]["initiative"] = val
+        self.save_state()
+
+    def add_item(self, name: str, item: str, quantity: int):
+        """Adds an item to player"""
+
+        player_id = self.get_player_id_by_name(name)
+        self.log.info(f"Adding {item} to {name}")
+
+        if len(self._players[player_id]["items"]) >= 9:
+            raise ValueError("Player has too many items")
+
+        self._players[player_id]["items"].append({"name": item, "quantity": quantity})
+        self.save_state()
+
+    def edit_item(self, name: str, item_name: str, quantity: int):
+        """Edits an item in player"""
+
+        player_id = self.get_player_id_by_name(name)
+        self.log.info(f"Editing {item_name} in {name}")
+
+        for item in self._players[player_id]["items"]:
+            if quantity == 0 and item["name"] == item_name:
+                self._players[player_id]["items"].remove(item)
+                break
+            if item["name"] == item_name:
+                item["quantity"] = quantity
+                break
+        self.save_state()
+
+    def remove_item(self, name: str, item_name: str):
+        """Removes an item from player"""
+
+        player_id = self.get_player_id_by_name(name)
+        self.log.info(f"Removing {item_name} from {name}")
+        self.log.debug(self._players[player_id]["items"])
+
+        for item in self._players[player_id]["items"]:
+            if item["name"] == item_name:
+                self._players[player_id]["items"].remove(item)
+                self.log.debug(self._players[player_id]["items"])
+                break
+        self.save_state()
+
+    def get_items(self, name: str):
+        """Returns items for player"""
+
+        player_id = self.get_player_id_by_name(name)
+        self.log.info(f"Getting items for {name}")
+
+        return self._players[player_id]["items"]
+
+    def convert_to_message(self, items: dict):
+        """
+        Converts items to message
+
+        :param items: Dictionary of items
+        :return: Message to send
+        """
+
+        message = ""
+        if len(items) == 0:
+            return "No items"
+        for item in items:
+            message += f"```{item['name']}: {item['quantity']}```\n"
+        self.log.debug(f"Returning: {message}")
+        return message
+
+    def damage(self, name: str, damage: int):
+        """Applies damage to player"""
+
+        player_id = self.get_player_id_by_name(name)
+        self.log.info(f"Applying {damage} to {name}")
+
+        self._players[player_id]["hp"] -= damage
+        self.save_state()
+
+    def get_hp(self, name: str):
+        """Returns HP of player"""
+
+        player_id = self.get_player_id_by_name(name)
+        self.log.info(f"Getting HP of {name}")
+
+        return self._players[player_id]["hp"]
+
+    def heal(self, name: str, heal: int):
+        """Heals player"""
+
+        player_id = self.get_player_id_by_name(name)
+        self.log.info(f"Healing {heal} to {name}")
+
+        self._players[player_id]["hp"] += heal
         self.save_state()

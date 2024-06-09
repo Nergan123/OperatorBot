@@ -45,3 +45,98 @@ class PlayerCommand(BaseClass, commands.Cog, name="Players handling"):
             await ctx.send(f"Set initiative modifier for {name}")
         except ValueError as error:
             await ctx.send(str(error).replace("'", ""))
+
+    @commands.command(name="add_item", help="Adds an item to player")
+    @commands.has_role("DM")
+    async def add_item(self, ctx: Context, name: str, item: str, quantity: int):
+        """Adds an item to player"""
+
+        try:
+            self.state.get_player_service().add_item(name, item, quantity)
+            await ctx.send(f"Added item to {name}")
+        except ValueError as error:
+            await ctx.send(str(error).replace("'", ""))
+
+    @commands.command(name="edit_item", help="edit an item in player")
+    @commands.has_role("DM")
+    async def edit_item(self, ctx: Context, name: str, item: str, quantity: int):
+        """Edits an item in player"""
+
+        try:
+            self.state.get_player_service().edit_item(name, item, quantity)
+            await ctx.send(f"Edited item in {name}")
+        except ValueError as error:
+            await ctx.send(str(error).replace("'", ""))
+
+    @commands.command(name="remove_item", help="Removes an item from player")
+    @commands.has_role("DM")
+    async def remove_item(self, ctx: Context, name: str, item: str):
+        """Removes an item from player"""
+
+        try:
+            self.state.get_player_service().remove_item(name, item)
+            await ctx.send(f"Removed item from {name}")
+        except ValueError as error:
+            await ctx.send(str(error).replace("'", ""))
+
+    @commands.command(name="show_items", help="Shows items of a player")
+    async def show_items(self, ctx: Context, name: str = None):
+        """Shows items of a player"""
+
+        if name is None:
+            player_id = ctx.message.author.id
+            name = self.state.get_player_service().get_player_by_id(player_id)["name"]
+
+        try:
+            items = self.state.get_player_service().get_items(name)
+            message = self.state.get_player_service().convert_to_message(items)
+            await ctx.send(message)
+        except ValueError as error:
+            await ctx.send(str(error).replace("'", ""))
+
+    @commands.command(name="show_player", help="Shows player data")
+    async def show_player(self, ctx: Context, name: str = None):
+        """Shows player data"""
+
+        if name is None:
+            player_id = ctx.message.author.id
+            name = self.state.get_player_service().get_player_by_id(str(player_id))["name"]
+
+        try:
+            player = self.state.get_player_service().get_player_by_name(name)
+            message = f"**Name**: {player['name']}\n\n"
+            message += f"**HP**: {player['hp']}\n"
+            message += f"**Initiative**: {player['initiative']}\n"
+            message += f"**Role**: {player['role']}\n"
+            items = self.state.get_player_service().get_items(name)
+            items = self.state.get_player_service().convert_to_message(items)
+            message += f"**Items**: \n{items}\n"
+            await ctx.send(message)
+        except ValueError as error:
+            await ctx.send(str(error).replace("'", ""))
+
+    @commands.command(name="damage", help="Deals damage to a player")
+    @commands.has_role("DM")
+    async def damage(self, ctx: Context, name: str, damage: int):
+        """Deals damage to a player"""
+
+        try:
+            self.state.get_player_service().damage(name, damage)
+            message = f"Dealt {damage} damage to {name}"
+            message += f"\n\n**{name}** has {self.state.get_player_service().get_hp(name)} HP left"
+            await ctx.send(message)
+        except ValueError as error:
+            await ctx.send(str(error).replace("'", ""))
+
+    @commands.command(name="heal", help="Heals a player")
+    @commands.has_role("DM")
+    async def heal(self, ctx: Context, name: str, heal: int):
+        """Heals a player"""
+
+        try:
+            self.state.get_player_service().heal(name, heal)
+            message = f"Healed {heal} to {name}"
+            message += f"\n\n**{name}** has {self.state.get_player_service().get_hp(name)} HP left"
+            await ctx.send(message)
+        except ValueError as error:
+            await ctx.send(str(error).replace("'", ""))

@@ -54,3 +54,36 @@ class DiceRollerCommand(BaseClass, commands.Cog, name="Dice rolls"):
 
         except ZeroDivisionError:
             await ctx.send("Both values should be greater than 0")
+
+    @commands.command(name="attack", help="Rolls the dices for attack. Example: !attack 3d6")
+    async def attack(self, ctx: Context, message: str) -> None:
+        """Rolls the dices for attack"""
+
+        try:
+            rolls, percent = self.state.get_dice_rolls().roll(message)
+            hit, hit_percent = self.state.get_dice_rolls().roll(f"{len(rolls)}d20")
+            player_id = ctx.author.id
+            name = self.state.get_player_service().get_player_by_id(player_id)["name"]
+            items = self.state.get_player_service().get_items(name)
+            quantity = 0
+            for item in items:
+                if item["name"] == "ammo":
+                    quantity = item["quantity"]
+                    break
+            if quantity < len(rolls):
+                raise ValueError("Not enough ammo")
+            if quantity == 0:
+                raise ValueError("No ammo")
+            self.state.get_player_service().edit_item(name, "ammo", quantity - len(rolls))
+            message = self.state.get_commentator().get_comment(
+                "attack_roll",
+                name=ctx.message.author.display_name,
+                percent=percent,
+                rolls=rolls,
+                type="damage",
+            )
+            message += f"\n\n**{ctx.message.author.display_name}** hits: {hit} ({hit_percent})"
+            await ctx.send(message)
+        except ValueError as e:
+            await ctx.send(str(e))
+

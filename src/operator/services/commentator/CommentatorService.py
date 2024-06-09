@@ -9,8 +9,10 @@ class CommentatorService(BaseClass):
     def __init__(self):
         super().__init__("commentator")
         self._dice_comments = None
+        self._attack_comments = None
         self._comment_type = {
-            "dice_roll": self.comment_on_dice
+            "dice_roll": self.comment_on_dice,
+            "attack_roll": self.get_attack_comment,
         }
         self._load_comments()
         self.log.info("Loaded")
@@ -20,6 +22,8 @@ class CommentatorService(BaseClass):
 
         with open("src/operator/data/dice_comments.json", "r") as data:
             self._dice_comments = json.load(data)
+        with open("src/operator/data/attack_comments.json", "r") as data:
+            self._attack_comments = json.load(data)
         self.log.info("Comments loaded")
 
     def get_comment(self, request_type: str, **kwargs) -> str:
@@ -54,5 +58,23 @@ class CommentatorService(BaseClass):
         output = self._dice_comments["comments"][res]
         output = random.choice(output) + "\n\n"
         output += f"**{name}** rolls: **{sum(rolls)}**"
+
+        return output
+
+    def get_attack_comment(self, name: str, percent: int, rolls: list, type: str) -> str:
+        """Returns a dice roll comment according to success rate"""
+
+        res = 100
+        for key in self._dice_comments["comments"]:
+            if percent <= int(key):
+                res = key
+                break
+
+        output = self._attack_comments["comments"][res]
+        output = random.choice(output) + "\n\n"
+        output += f"**{name}** {type}: {rolls[0]}"
+        for roll in rolls[1::]:
+            output += f" + {roll}"
+        output += f" = **{sum(rolls)}**"
 
         return output
